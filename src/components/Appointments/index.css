@@ -95,8 +95,14 @@
   border-radius: 10px;
   padding-top: 2px;
 }
+.showImp {
+  background-color: #9897f0;
+  color: black;
+}
 .appointment-list {
   list-style-type: none;
+  flex-wrap: wrap;
+  padding: 0;
 }
 
 @media (min-width: 768px) {
@@ -126,5 +132,12 @@
     font-family: roboto;
     background-image: linear-gradient(to bottom, #9796f0, #fbc7d4);
     overflow: auto;
+  }
+  .appointment-list {
+    display: flex;
+
+    list-style-type: none;
+    flex-wrap: wrap;
+    padding: 0;
   }
 }
