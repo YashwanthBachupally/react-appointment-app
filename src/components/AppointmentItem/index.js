@@ -1,5 +1,6 @@
 // Write your code here
-import {format} from 'date-fns'
+
+import './index.css'
 
 const AppointmentItem = props => {
   const {details, isStaredApp} = props
@@ -12,11 +13,9 @@ const AppointmentItem = props => {
   return (
     <li className="app-item">
       <div className="title-date-cont">
-        <h1 className="app-title">{title}</h1>
+        <p className="app-title">{title}</p>
 
-        <p className="date-time">
-          {format(new Date(date), 'dd MMMM yyyy, EEEE')}
-        </p>
+        <p className="date-time">Date:{date}</p>
       </div>
       <button
         className="start-btn"
@@ -38,3 +37,4 @@ const AppointmentItem = props => {
 }
 
 export default AppointmentItem
+
