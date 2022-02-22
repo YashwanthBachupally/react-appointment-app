@@ -1,31 +1,20 @@
 // Write your code here
 import {Component} from 'react'
 import './index.css'
-// import {format} from 'date-fns'
+import {format} from 'date-fns'
 import {v4 as uuidv4} from 'uuid'
 import AppointmentItem from '../AppointmentItem'
 
 class Appointments extends Component {
-  state = {appointmentList: [], titleIp: '', dateIp: ''}
+  state = {appointmentList: [], titleIp: '', dateIp: '', showStarred: false}
 
-  onNewAppointment = e => {
-    e.preventDefault()
-    const {titleIp, dateIp} = this.state
-    const newAppointment = {
-      id: uuidv4(),
-      title: titleIp,
-      date: dateIp,
-      isStared: false,
-    }
-    this.setState(prev => ({
-      appointmentList: [...prev.appointmentList, newAppointment],
-      titleIp: '',
-      dateIp: '',
-    }))
+  filterStared = () => {
+    const {showStarred} = this.state
+    this.setState({showStarred: !showStarred})
   }
 
   isStarApp = id => {
-    const {appointmentList} = this.state
+    // const {appointmentList} = this.state
     this.setState(prev => ({
       appointmentList: prev.appointmentList.map(each => {
         if (id === each.id) {
@@ -44,11 +33,39 @@ class Appointments extends Component {
     this.setState({dateIp: e.target.value})
   }
 
+  onNewAppointment = e => {
+    e.preventDefault()
+    const {titleIp, dateIp} = this.state
+
+    const formatedDate = dateIp
+      ? format(new Date(dateIp), 'dd MMMM yyyy, EEEE')
+      : ''
+    const newAppointment = {
+      id: uuidv4(),
+      title: titleIp,
+      date: formatedDate,
+      isStared: false,
+    }
+    this.setState(prev => ({
+      appointmentList: [...prev.appointmentList, newAppointment],
+      titleIp: '',
+      dateIp: '',
+    }))
+  }
+
+  getStarred = () => {
+    const {appointmentList, showStarred} = this.state
+    if (showStarred) {
+      return appointmentList.filter(each => each.isStared === true)
+    }
+    return appointmentList
+  }
+
   render() {
-    const {appointmentList, titleIp, dateIp} = this.state
-
+    const {titleIp, dateIp, showStarred} = this.state
+    const appointments = this.getStarred()
     console.log(dateIp, titleIp)
-
+    const staredClass = showStarred ? 'showImp' : ''
     return (
       <div className="app-cont">
         <div className="appiontment-card">
@@ -56,9 +73,20 @@ class Appointments extends Component {
           <div className="form-img-cont">
             <form className="form" onSubmit={this.onNewAppointment}>
               <p className="title">Title</p>
-              <input type="text" className="title-ip" placeholder="Title" />
+              <input
+                type="text"
+                className="title-ip"
+                placeholder="Title"
+                value={titleIp}
+                onChange={this.onEnterTitle}
+              />
               <p className="daate">Date</p>
-              <input type="date" className="date-ip" />
+              <input
+                type="date"
+                className="date-ip"
+                value={dateIp}
+                onChange={this.onEnterDate}
+              />
               <button className="add-btn" type="submit">
                 Add
               </button>
@@ -72,12 +100,16 @@ class Appointments extends Component {
           <hr className="line-br" />
           <div className="bottom-hed">
             <p className="appintment">Appointment</p>
-            <button className="isImp" type="button">
+            <button
+              className={`isImp ${staredClass}`}
+              type="button"
+              onClick={this.filterStared}
+            >
               Starred
             </button>
           </div>
           <ul className="appointment-list">
-            {appointmentList.map(each => (
+            {appointments.map(each => (
               <AppointmentItem
                 key={each.id}
                 details={each}
